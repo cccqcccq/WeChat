@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="static/css/font-awesome.min.css">
+</head>
+
+<style>
+    body {
+        background-color: #F5F5F5;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .box {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    h2 {
+        color: #333;
+        font-size: 28px;
+        font-weight: 500;
+        margin-bottom: 40px;
+    }
+
+    .input-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .icon {
+        padding: 10px;
+        min-width: 40px;
+        text-align: center;
+        color: #777;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 10px;
+        margin-left: 10px;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        outline: none;
+    }
+
+    .btn {
+        background-color: #009688;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #008080;
+    }
+
+    .register-link {
+        color: #777;
+        font-size: 14px;
+        margin-top: 20px;
+    }
+
+    .register-link a {
+        color: #009688;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .register-link a:hover {
+        text-decoration: underline;
+    }
+
+</style>
+<body>
+<div class="container">
+    <div class="box">
+        <h2>Login</h2>
+        <div class="input-container">
+            <i class="fa fa-user icon"></i>
+            <input class="input-field" type="text" placeholder="账号" id="username">
+        </div>
+        <div class="input-container">
+            <i class="fa fa-lock icon"></i>
+            <input class="input-field" type="password" placeholder="密码" id="password">
+        </div>
+        <button type="submit" class="btn">登录</button>
+        <p class="register-link">还没有账号？ <a href="/register">立即注册</a></p>
+    </div>
+</div>
+<script src="static/js/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="static/js/jquery.cookie.js"></script>
+<script>
+    document.onkeydown = function (e){
+        if (e.key === "Enter"){
+            login()
+        }
+    }
+    $(".btn").on('click',login)
+    function login(){
+        var username = $("#username").val()
+        var password = $("#password").val()
+        if(username === "" || password === ""){
+            alert("账号密码不能为空")
+            return
+        }
+        $.ajax({
+            url:'/api/login',
+            type:'post',
+            data:{
+                'username':username,
+                'password':password,
+            },
+            success:function (e){
+                $.cookie("token",e.data)
+                // 将json存入js的session
+                if(e.code === 200){
+                    location.href = '/'
+                }else{
+                    alert(e.error)
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>
